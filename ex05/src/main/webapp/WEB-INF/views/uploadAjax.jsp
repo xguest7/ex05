@@ -93,11 +93,11 @@ $(document).ready(function(){
 				 for(let i=0; i<result.length; i++){
 					if(!result[i].isImage){
 						 str +=
-						 "<a href='/download?fileName="+result[i].uploadPath+"/"+result[i].uuid+"_"+result[i].fileName+"'><li><image src='/resources/file.png'>"+result[i].fileName+"</li></a>";
+						 "<li><a href='/download?fileName="+result[i].uploadPath+"/"+result[i].uuid+"_"+result[i].fileName+"'><image src='/resources/file.png'>"+result[i].fileName+"</a> (<a href='delete'>X</a>)</li>";
 					}else{ //이미지라면
 						fileName=result[i].uploadPath+"/s_"+result[i].uuid;
 					 	str +=
-						 "<a href='/download?fileName="+result[i].uploadPath+"/"+result[i].uuid+"_"+result[i].fileName+"'><image src='/display?fileName="+fileName+"_"+result[i].fileName+"'>"+result[i].fileName+"</li></a>";
+						 "<li><a href='/download?fileName="+result[i].uploadPath+"/"+result[i].uuid+"_"+result[i].fileName+"'><image src='/display?fileName="+fileName+"_"+result[i].fileName+"'>"+result[i].fileName+"</a> (<a href='delete'>X</a>)</li>";
 					}
 				}
 				 $(".uploadResult").append(str);
@@ -111,7 +111,28 @@ $(document).ready(function(){
 		
 	});
 	
-
+	$(".uploadResult").on("click","a[href='delete']" ,function(e){
+		e.preventDefault();
+		console.log("X버튼을 클릭했네...");
+		var parent=$(this).parent(); //부모요소(성공시 지울화면)
+		let fileName=$(this).prev().attr("href");
+		pos=fileName.indexOf('='); //문자위치 찾기
+		fileName=fileName.substring(pos+1); // =다음 문자만 뽑기
+		console.log(fileName);
+		$.ajax({ 
+			url:'/deleteFile' ,
+			type: 'post' ,
+			data: {fileName:fileName},
+			success:function(){
+				alert("파일삭제 완료");
+				parent.remove(); //해당요소 삭제
+			},
+			error:function(){
+				alert("파일삭제 실패");
+			}
+		});
+		
+	});//.uploadResult 이벤트
 
 }); //ready
 		

@@ -233,6 +233,25 @@ public class UploadController {
 		
 		
 	}
+	
+	@PostMapping("/deleteFile")
+	@ResponseBody
+	public String deleteFile(String fileName) {
+		log.info("삭제요청 파일이름:"+fileName);
+		File file=new File(fileName);
+		log.info("path:"+file.getParent());
+		log.info("name:"+file.getName());
+		String thumnailFile=file.getParent()+"\\s_"+file.getName();
+		log.info("thumnailFile:"+thumnailFile);
+		file.delete();
+		
+		//음 나는 그냥 썸네일 파일있으면 같이지우는걸로
+		File file2=new File(thumnailFile);
+		if(file2.exists())
+			file2.delete();
+		
+		return "good";
+	}
 }
 
 
